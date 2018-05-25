@@ -51,7 +51,7 @@ impl ScalableBloomFilter {
     }
 
     pub fn contains_or_insert(&mut self, key: &str) -> bool {
-        let n = self.filters.len() - 1;
+        let n = if self.filters.len() == 1 { 1 } else { self.filters.len() - 1 };
 
         if self.filters.iter().take(n).any(|f| f.contains(key)) {
             true
