@@ -111,24 +111,38 @@ impl BloomFilter {
 
     /// Adds a value to the bloom filter.
     ///
+    /// Returns whether the value is already (maybe) in the filter or not. Duplicate values do not
+    /// affect the load factor.
+    ///
     /// # Examples
     ///
     /// ```
     /// use bloom::BloomFilter;
     ///
     /// let mut filter = BloomFilter::from_fpp(0.0001, 64);
-    /// filter.insert("a");
-    /// filter.insert("b");
+    /// assert!(filter.insert("a"));
+    /// assert!(filter.insert("b"));
+    /// assert!(!filter.insert("b"));
     /// ```
-    pub fn insert(&mut self, key: &str) {
+    pub fn insert(&mut self, key: &str) -> bool {
+        let mut present = true;
+
         let hasher = DoubleHasher::new(key, &self.state_1, &self.state_2);
 
         for hash in hasher.take(self.k) {
             let i = (hash as usize) % self.m;
-            self.bits.set(i, true);
+
+            if !self.bits[i] {
+                present = false;
+                self.bits.set(i, true);
+            }
         }
 
-        self.n += 1;
+        if !present {
+            self.n += 1;
+        }
+
+        !present
     }
 
     /// Returns the number of elements `n` in the filter.

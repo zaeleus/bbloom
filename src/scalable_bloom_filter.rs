@@ -38,26 +38,52 @@ impl ScalableBloomFilter {
         self.filters.iter().any(|f| f.contains(key))
     }
 
-    pub fn insert(&mut self, key: &str) {
+    /// Adds a value to the bloom filter.
+    ///
+    /// Returns whether the value is already (maybe) in the _last_ filter or not. Duplicate values
+    /// may be present in the scalable Bloom filter but not in the last filter. When a duplicate
+    /// value is in the last filter, it does not affect the load factor.
+    pub fn insert(&mut self, key: &str) -> bool {
         if self.n >= self.total_capacity {
             self.grow();
         }
 
         let i = self.filters.len() - 1;
         let filter = &mut self.filters[i];
-        filter.insert(key);
+        let inserted = filter.insert(key);
 
-        self.n += 1;
+        if inserted {
+            self.n += 1;
+        }
+
+        inserted
     }
 
+    /// Adds a value to a Bloom filter if it is not already present.
+    ///
+    /// When there are > 1 filters, this is only slightly faster than calling both `contains` and
+    /// `insert`, as the last filter does not have to be checked twice.
+    ///
+    /// Returns whether the value is (maybe) in the filter or not.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use bloom::ScalableBloomFilter;
+    ///
+    /// let mut filter = ScalableBloomFilter::new(0.0001, 64);
+    ///
+    /// assert!(!filter.contains_or_insert("a"));
+    /// assert!(!filter.contains_or_insert("b"));
+    /// assert!(filter.contains_or_insert("b"));
+    /// ```
     pub fn contains_or_insert(&mut self, key: &str) -> bool {
         let n = if self.filters.len() == 1 { 1 } else { self.filters.len() - 1 };
 
         if self.filters.iter().take(n).any(|f| f.contains(key)) {
             true
         } else {
-            self.insert(key);
-            false
+            !self.insert(key)
         }
     }
 
