@@ -25,6 +25,15 @@ pub struct ScalableBloomFilter {
 }
 
 impl ScalableBloomFilter {
+    /// Creates a new scalable Bloom filter that targets a false positive probability `p` ([0.0,
+    /// 1.0]) with an initial expected number of inserted elements `n`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use bloom::ScalableBloomFilter;
+    /// let _filter = ScalableBloomFilter::new(0.0001, 64);
+    /// ```
     pub fn new(p: f64, n: usize) -> ScalableBloomFilter {
         ScalableBloomFilter {
             n: 0,
@@ -34,6 +43,20 @@ impl ScalableBloomFilter {
         }
     }
 
+    /// Tests all filters for whether an element may be in the filter or definitely not in the filter.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use bloom::ScalableBloomFilter;
+    ///
+    /// let mut filter = ScalableBloomFilter::new(0.0001, 64);
+    ///
+    /// filter.insert("a");
+    ///
+    /// assert!(filter.contains("a"));
+    /// assert!(!filter.contains("b"));
+    /// ```
     pub fn contains(&self, key: &str) -> bool {
         self.filters.iter().any(|f| f.contains(key))
     }
