@@ -5,3 +5,4 @@ authors = ["Michael Macias <zaeleus@gmail.com>"]
 
 [dependencies]
 bit-vec = "0.5.0"
+libc = "0.2.42"
