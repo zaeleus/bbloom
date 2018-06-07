@@ -1,3 +1,5 @@
+use std::hash::Hash;
+
 use BloomFilter;
 
 // growth factor `s`
@@ -57,7 +59,7 @@ impl ScalableBloomFilter {
     /// assert!(filter.contains("a"));
     /// assert!(!filter.contains("b"));
     /// ```
-    pub fn contains(&self, key: &str) -> bool {
+    pub fn contains<H: Hash + ?Sized>(&self, key: &H) -> bool {
         self.filters.iter().any(|f| f.contains(key))
     }
 
@@ -66,7 +68,7 @@ impl ScalableBloomFilter {
     /// Returns whether the value is already (maybe) in the _last_ filter or not. Duplicate values
     /// may be present in the scalable Bloom filter but not in the last filter. When a duplicate
     /// value is in the last filter, it does not affect the load factor.
-    pub fn insert(&mut self, key: &str) -> bool {
+    pub fn insert<H: Hash + ?Sized>(&mut self, key: &H) -> bool {
         if self.n >= self.total_capacity {
             self.grow();
         }
@@ -100,7 +102,7 @@ impl ScalableBloomFilter {
     /// assert!(!filter.contains_or_insert("b"));
     /// assert!(filter.contains_or_insert("b"));
     /// ```
-    pub fn contains_or_insert(&mut self, key: &str) -> bool {
+    pub fn contains_or_insert<H: Hash + ?Sized>(&mut self, key: &H) -> bool {
         let n = if self.filters.len() == 1 { 1 } else { self.filters.len() - 1 };
 
         if self.filters.iter().take(n).any(|f| f.contains(key)) {

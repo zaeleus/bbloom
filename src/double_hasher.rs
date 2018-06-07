@@ -9,8 +9,8 @@ pub struct DoubleHasher {
 }
 
 impl DoubleHasher {
-    pub fn new(
-        key: &str,
+    pub fn new<H: Hash + ?Sized>(
+        key: &H,
         state_1: &RandomState,
         state_2: &RandomState,
     ) -> DoubleHasher {

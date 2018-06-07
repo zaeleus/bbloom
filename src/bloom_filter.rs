@@ -1,5 +1,6 @@
 use std::collections::hash_map::RandomState;
 use std::f64;
+use std::hash::Hash;
 
 use bit_vec::BitVec;
 
@@ -95,7 +96,7 @@ impl BloomFilter {
     /// assert!(filter.contains("b"));
     /// assert!(!filter.contains("c"));
     /// ```
-    pub fn contains(&self, key: &str) -> bool {
+    pub fn contains<H: Hash + ?Sized>(&self, key: &H) -> bool {
         let hasher = DoubleHasher::new(key, &self.state_1, &self.state_2);
 
         for hash in hasher.take(self.k) {
@@ -124,7 +125,7 @@ impl BloomFilter {
     /// assert!(filter.insert("b"));
     /// assert!(!filter.insert("b"));
     /// ```
-    pub fn insert(&mut self, key: &str) -> bool {
+    pub fn insert<H: Hash + ?Sized>(&mut self, key: &H) -> bool {
         let mut present = true;
 
         let hasher = DoubleHasher::new(key, &self.state_1, &self.state_2);
