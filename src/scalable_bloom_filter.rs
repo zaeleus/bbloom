@@ -1,6 +1,6 @@
 use std::hash::Hash;
 
-use BloomFilter;
+use crate::BloomFilter;
 
 // growth factor `s`
 const GROWTH_FACTOR: usize = 2;

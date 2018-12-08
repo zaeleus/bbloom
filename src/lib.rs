@@ -1,6 +1,3 @@
-extern crate bit_vec;
-extern crate libc;
-
 pub use self::bloom_filter::BloomFilter;
 pub use self::scalable_bloom_filter::ScalableBloomFilter;
 

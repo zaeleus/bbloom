@@ -2,7 +2,7 @@ use std::ffi::CStr;
 
 use libc::{c_char, c_double, size_t};
 
-use BloomFilter;
+use crate::BloomFilter;
 
 #[no_mangle]
 pub extern fn bb_bloom_filter_from_fpp(

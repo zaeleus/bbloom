@@ -4,7 +4,7 @@ use std::hash::Hash;
 
 use bit_vec::BitVec;
 
-use double_hasher::DoubleHasher;
+use crate::double_hasher::DoubleHasher;
 
 /// A Bloom filter is a probabilistic data structure to test whether an element may be in a set or
 /// definitely not in a set.
