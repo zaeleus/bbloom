@@ -43,7 +43,6 @@ impl BloomFilter {
         BloomFilter::new(m, k)
     }
 
-
     /// Creates a new bloom filter with a predetermined bit array size `m` and number of hash
     /// functions `k`.
     ///
