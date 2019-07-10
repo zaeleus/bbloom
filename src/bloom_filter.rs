@@ -18,8 +18,8 @@ pub struct BloomFilter {
     // number of hash functions
     k: usize,
 
-    state_1: RandomState,
-    state_2: RandomState,
+    builder_1: RandomState,
+    builder_2: RandomState,
 }
 
 impl BloomFilter {
@@ -58,8 +58,8 @@ impl BloomFilter {
             m,
             n: 0,
             k,
-            state_1: RandomState::new(),
-            state_2: RandomState::new(),
+            builder_1: RandomState::new(),
+            builder_2: RandomState::new(),
         }
     }
 
@@ -96,7 +96,7 @@ impl BloomFilter {
     /// assert!(!filter.contains("c"));
     /// ```
     pub fn contains<H: Hash + ?Sized>(&self, key: &H) -> bool {
-        let hasher = DoubleHasher::new(key, &self.state_1, &self.state_2);
+        let hasher = self.build_hasher(key);
 
         for hash in hasher.take(self.k) {
             let i = (hash as usize) % self.m;
@@ -127,7 +127,7 @@ impl BloomFilter {
     pub fn insert<H: Hash + ?Sized>(&mut self, key: &H) -> bool {
         let mut present = true;
 
-        let hasher = DoubleHasher::new(key, &self.state_1, &self.state_2);
+        let hasher = self.build_hasher(key);
 
         for hash in hasher.take(self.k) {
             let i = (hash as usize) % self.m;
@@ -163,6 +163,13 @@ impl BloomFilter {
     /// ```
     pub fn len(&self) -> usize {
         self.n
+    }
+
+    fn build_hasher<H>(&self, key: &H) -> DoubleHasher
+    where
+        H: Hash + ?Sized,
+    {
+        DoubleHasher::new(key, &self.builder_1, &self.builder_2)
     }
 }
 

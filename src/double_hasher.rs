@@ -1,4 +1,3 @@
-use std::collections::hash_map::RandomState;
 use std::hash::{BuildHasher, Hash, Hasher};
 
 // https://en.wikipedia.org/wiki/Double_hashing
@@ -9,16 +8,17 @@ pub struct DoubleHasher {
 }
 
 impl DoubleHasher {
-    pub fn new<H: Hash + ?Sized>(
-        key: &H,
-        state_1: &RandomState,
-        state_2: &RandomState,
-    ) -> DoubleHasher {
-        let mut hasher = state_1.build_hasher();
+    pub fn new<H, B, C>(key: &H, builder_1: &B, builder_2: &C) -> DoubleHasher
+    where
+        H: Hash + ?Sized,
+        B: BuildHasher,
+        C: BuildHasher,
+    {
+        let mut hasher = builder_1.build_hasher();
         key.hash(&mut hasher);
         let h1 = hasher.finish();
 
-        let mut hasher = state_2.build_hasher();
+        let mut hasher = builder_2.build_hasher();
         key.hash(&mut hasher);
         let h2 = hasher.finish();
 
