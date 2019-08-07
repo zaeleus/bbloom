@@ -199,14 +199,6 @@ fn optimal_required_bits(p: f64, n: usize) -> usize {
     m.ceil() as usize
 }
 
-#[test]
-fn test_optimal_required_bits() {
-    let p = 0.01;
-    let n = 128;
-    let m = optimal_required_bits(p, n);
-    assert_eq!(m, 1227);
-}
-
 // Calculates the optimal number of hash functions given the size of the bit array `m` and the
 // expected number of inserted elements `n`.
 fn optimal_number_of_hash_functions(m: usize, n: usize) -> usize {
@@ -216,10 +208,23 @@ fn optimal_number_of_hash_functions(m: usize, n: usize) -> usize {
     k.ceil() as usize
 }
 
-#[test]
-fn test_optimal_number_of_hash_functions() {
-    let m = 1227;
-    let n = 128;
-    let k = optimal_number_of_hash_functions(m, n);
-    assert_eq!(k, 7);
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_optimal_required_bits() {
+        let p = 0.01;
+        let n = 128;
+        let m = optimal_required_bits(p, n);
+        assert_eq!(m, 1227);
+    }
+
+    #[test]
+    fn test_optimal_number_of_hash_functions() {
+        let m = 1227;
+        let n = 128;
+        let k = optimal_number_of_hash_functions(m, n);
+        assert_eq!(k, 7);
+    }
 }
