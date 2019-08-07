@@ -165,6 +165,23 @@ impl BloomFilter {
         self.n
     }
 
+    /// Returns `true` if the bloom filter contains no elements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use bloom::BloomFilter;
+    ///
+    /// let mut filter = BloomFilter::from_fpp(0.0001, 64);
+    /// assert!(filter.is_empty());
+    ///
+    /// filter.insert("a");
+    /// assert!(!filter.is_empty());
+    /// ```
+    pub fn is_empty(&self) -> bool {
+        self.n == 0
+    }
+
     fn build_hasher<H>(&self, key: &H) -> DoubleHasher
     where
         H: Hash + ?Sized,
