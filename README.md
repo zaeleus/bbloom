@@ -35,19 +35,3 @@ fn main() {
     assert!(!filter.contains("c"));
 }
 ```
-
-## C API
-
-A C API is available for calling from C or a FFI. Use `cargo rustc` to build a
-dynamic library.
-
-```
-$ cargo rustc --release -- --crate-type cdylib
-```
-
-The shared object will be saved as `target/release/deps/libbloom*.so`, or
-`libbloom*.dylib` on macOS.
-
-See [`bloom.h`] for a list of exported functions.
-
-[`bloom.h`]: https://github.com/zaeleus/bloom/blob/master/src/c_api/include/bloom.h
