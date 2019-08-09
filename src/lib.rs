@@ -5,3 +5,5 @@ pub mod bloom_filter;
 pub mod c_api;
 pub mod double_hasher;
 pub mod scalable_bloom_filter;
+
+pub type DefaultHashBuilder = std::collections::hash_map::RandomState;

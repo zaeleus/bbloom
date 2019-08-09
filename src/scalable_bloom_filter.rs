@@ -1,6 +1,6 @@
-use std::hash::Hash;
+use std::hash::{BuildHasher, Hash};
 
-use crate::BloomFilter;
+use crate::{BloomFilter, DefaultHashBuilder};
 
 // growth factor `s`
 const GROWTH_FACTOR: usize = 2;
@@ -15,18 +15,18 @@ const TIGHTENING_RATIO: f64 = 0.85;
 /// Sérgio, et al.
 ///
 /// [Scalable Bloom Filters]: https://dl.acm.org/citation.cfm?id=1224501
-pub struct ScalableBloomFilter {
+pub struct ScalableBloomFilter<S = DefaultHashBuilder> {
     // total number of elements inserted
     n: usize,
     // total capacity of all filters
     total_capacity: usize,
     // a list of all filters in order they were created
-    filters: Vec<BloomFilter>,
+    filters: Vec<BloomFilter<S>>,
     // the (tightened) false positive probably of the last created filter
     last_fpp: f64,
 }
 
-impl ScalableBloomFilter {
+impl ScalableBloomFilter<DefaultHashBuilder> {
     /// Creates a new scalable Bloom filter that targets a false positive probability `p` ([0.0,
     /// 1.0]) with an initial expected number of inserted elements `n`.
     ///
@@ -36,11 +36,37 @@ impl ScalableBloomFilter {
     /// use bloom::ScalableBloomFilter;
     /// let _filter = ScalableBloomFilter::new(0.0001, 64);
     /// ```
-    pub fn new(p: f64, n: usize) -> ScalableBloomFilter {
+    pub fn new(p: f64, n: usize) -> ScalableBloomFilter<DefaultHashBuilder> {
+        ScalableBloomFilter::with_hashers(
+            p,
+            n,
+            DefaultHashBuilder::new(),
+            DefaultHashBuilder::new(),
+        )
+    }
+}
+
+impl<S> ScalableBloomFilter<S>
+where
+    S: BuildHasher + Default,
+{
+    /// Creates a new scalable Bloom filter that targets a false positive probability `p` ([0.0,
+    /// 1.0]) with an initial expected number of inserted elements `n`, using `builder_1` and
+    /// `builder_2` to hash the data in the initial filter.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use bloom::ScalableBloomFilter;
+    /// let _filter = ScalableBloomFilter::new(0.0001, 64);
+    /// ```
+    pub fn with_hashers(p: f64, n: usize, builder_1: S, builder_2: S) -> ScalableBloomFilter<S> {
+        let initial_filter = BloomFilter::from_fpp_with_hashers(p, n, builder_1, builder_2);
+
         ScalableBloomFilter {
             n: 0,
             total_capacity: n,
-            filters: vec![BloomFilter::from_fpp(p, n)],
+            filters: vec![initial_filter],
             last_fpp: p,
         }
     }
@@ -120,7 +146,7 @@ impl ScalableBloomFilter {
         let p = self.last_fpp * TIGHTENING_RATIO;
         let n = self.total_capacity * GROWTH_FACTOR;
 
-        let filter = BloomFilter::from_fpp(p, n);
+        let filter = BloomFilter::from_fpp_with_hashers(p, n, S::default(), S::default());
         self.filters.push(filter);
 
         self.total_capacity += n;

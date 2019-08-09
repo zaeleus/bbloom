@@ -14,15 +14,11 @@ impl DoubleHasher {
         B: BuildHasher,
         C: BuildHasher,
     {
-        let mut hasher = builder_1.build_hasher();
-        key.hash(&mut hasher);
-        let h1 = hasher.finish();
-
-        let mut hasher = builder_2.build_hasher();
-        key.hash(&mut hasher);
-        let h2 = hasher.finish();
-
-        DoubleHasher { h1, h2, i: 0 }
+        DoubleHasher {
+            h1: hash(key, builder_1),
+            h2: hash(key, builder_2),
+            i: 0,
+        }
     }
 }
 
@@ -43,4 +39,14 @@ impl Iterator for DoubleHasher {
 
         Some(hash)
     }
+}
+
+fn hash<H, B>(key: &H, builder: &B) -> u64
+where
+    H: Hash + ?Sized,
+    B: BuildHasher,
+{
+    let mut hasher = builder.build_hasher();
+    key.hash(&mut hasher);
+    hasher.finish()
 }

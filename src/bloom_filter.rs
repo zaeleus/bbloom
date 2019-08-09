@@ -1,14 +1,13 @@
-use std::collections::hash_map::RandomState;
 use std::f64;
-use std::hash::Hash;
+use std::hash::{BuildHasher, Hash};
 
 use bit_vec::BitVec;
 
-use crate::double_hasher::DoubleHasher;
+use crate::{double_hasher::DoubleHasher, DefaultHashBuilder};
 
 /// A Bloom filter is a probabilistic data structure to test whether an element may be in a set or
 /// definitely not in a set.
-pub struct BloomFilter {
+pub struct BloomFilter<S = DefaultHashBuilder> {
     bits: BitVec,
 
     // bit array length
@@ -18,11 +17,11 @@ pub struct BloomFilter {
     // number of hash functions
     k: usize,
 
-    builder_1: RandomState,
-    builder_2: RandomState,
+    builder_1: S,
+    builder_2: S,
 }
 
-impl BloomFilter {
+impl BloomFilter<DefaultHashBuilder> {
     /// Creates a new bloom filter that targets a false positive probability `p` ([0.0, 1.0]) with
     /// an expected number of inserted elements `n`.
     ///
@@ -37,10 +36,13 @@ impl BloomFilter {
     /// use bloom::BloomFilter;
     /// let _filter = BloomFilter::from_fpp(0.0001, 64);
     /// ```
-    pub fn from_fpp(p: f64, n: usize) -> BloomFilter {
-        let m = optimal_required_bits(p, n);
-        let k = optimal_number_of_hash_functions(m, n);
-        BloomFilter::new(m, k)
+    pub fn from_fpp(p: f64, n: usize) -> BloomFilter<DefaultHashBuilder> {
+        BloomFilter::from_fpp_with_hashers(
+            p,
+            n,
+            DefaultHashBuilder::new(),
+            DefaultHashBuilder::new(),
+        )
     }
 
     /// Creates a new bloom filter with a predetermined bit array size `m` and number of hash
@@ -52,14 +54,60 @@ impl BloomFilter {
     /// use bloom::BloomFilter;
     /// let _filter = BloomFilter::new(1227, 14);
     /// ```
-    pub fn new(m: usize, k: usize) -> BloomFilter {
+    pub fn new(m: usize, k: usize) -> BloomFilter<DefaultHashBuilder> {
+        BloomFilter::with_hashers(m, k, DefaultHashBuilder::new(), DefaultHashBuilder::new())
+    }
+}
+
+impl<S> BloomFilter<S>
+where
+    S: BuildHasher,
+{
+    /// Creates a new bloom filter that targets a false positive probability `p` ([0.0, 1.0]) with
+    /// an expected number of inserted elements `n`, using `builder_1` and `builder_2` to hash the
+    /// data.
+    ///
+    /// The optimal size of the bit array `m` and number of hash functions `k` are automatically
+    /// calculated. See "[Optimal number of hash functions][1]".
+    ///
+    /// [1]: https://en.wikipedia.org/wiki/Bloom_filter#Optimal_number_of_hash_functions
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use std::collections::hash_map::RandomState;
+    /// use bloom::BloomFilter;
+    /// let _filter = BloomFilter::from_fpp_with_hashers(
+    ///     0.0001,
+    ///     64,
+    ///     RandomState::new(),
+    ///     RandomState::new(),
+    /// );
+    /// ```
+    pub fn from_fpp_with_hashers(p: f64, n: usize, builder_1: S, builder_2: S) -> BloomFilter<S> {
+        let m = optimal_required_bits(p, n);
+        let k = optimal_number_of_hash_functions(m, n);
+        BloomFilter::with_hashers(m, k, builder_1, builder_2)
+    }
+
+    /// Creates a new bloom filter with a predetermined bit array size `m` and number of hash
+    /// functions `k`, using `builder_1` and `builder_2` to hash the data.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use std::collections::hash_map::RandomState;
+    /// use bloom::BloomFilter;
+    /// let _filter = BloomFilter::with_hashers(1227, 14, RandomState::new(), RandomState::new());
+    /// ```
+    pub fn with_hashers(m: usize, k: usize, builder_1: S, builder_2: S) -> BloomFilter<S> {
         BloomFilter {
             bits: BitVec::from_elem(m, false),
             m,
             n: 0,
             k,
-            builder_1: RandomState::new(),
-            builder_2: RandomState::new(),
+            builder_1,
+            builder_2,
         }
     }
 
