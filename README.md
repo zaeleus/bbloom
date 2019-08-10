@@ -2,6 +2,9 @@
 
 **bbloom** is a Rust library that provides an implementation of a Bloom filter.
 
+A scalable Bloom filter is also included, which is a variant that dynamically
+grows to ensure a given false positive probability.
+
 ## Install
 
 bbloom is not published to [crates.io]. Add the dependency to `Cargo.toml`
