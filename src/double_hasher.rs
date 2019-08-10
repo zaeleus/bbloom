@@ -8,13 +8,13 @@ pub struct DoubleHasher {
 }
 
 impl DoubleHasher {
-    pub fn new<H, B, C>(key: &H, builder_1: &B, builder_2: &C) -> DoubleHasher
+    pub fn new<H, B, C>(key: &H, builder_1: &B, builder_2: &C) -> Self
     where
         H: Hash + ?Sized,
         B: BuildHasher,
         C: BuildHasher,
     {
-        DoubleHasher {
+        Self {
             h1: hash(key, builder_1),
             h2: hash(key, builder_2),
             i: 0,

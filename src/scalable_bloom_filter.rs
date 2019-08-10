@@ -36,13 +36,8 @@ impl ScalableBloomFilter<DefaultHashBuilder> {
     /// use bbloom::ScalableBloomFilter;
     /// let _filter = ScalableBloomFilter::new(0.0001, 64);
     /// ```
-    pub fn new(p: f64, n: usize) -> ScalableBloomFilter<DefaultHashBuilder> {
-        ScalableBloomFilter::with_hashers(
-            p,
-            n,
-            DefaultHashBuilder::new(),
-            DefaultHashBuilder::new(),
-        )
+    pub fn new(p: f64, n: usize) -> Self {
+        Self::with_hashers(p, n, DefaultHashBuilder::new(), DefaultHashBuilder::new())
     }
 }
 
@@ -60,10 +55,10 @@ where
     /// use bbloom::ScalableBloomFilter;
     /// let _filter = ScalableBloomFilter::new(0.0001, 64);
     /// ```
-    pub fn with_hashers(p: f64, n: usize, builder_1: S, builder_2: S) -> ScalableBloomFilter<S> {
+    pub fn with_hashers(p: f64, n: usize, builder_1: S, builder_2: S) -> Self {
         let initial_filter = BloomFilter::from_fpp_with_hashers(p, n, builder_1, builder_2);
 
-        ScalableBloomFilter {
+        Self {
             n: 0,
             total_capacity: n,
             filters: vec![initial_filter],

@@ -36,13 +36,8 @@ impl BloomFilter<DefaultHashBuilder> {
     /// use bbloom::BloomFilter;
     /// let _filter = BloomFilter::from_fpp(0.0001, 64);
     /// ```
-    pub fn from_fpp(p: f64, n: usize) -> BloomFilter<DefaultHashBuilder> {
-        BloomFilter::from_fpp_with_hashers(
-            p,
-            n,
-            DefaultHashBuilder::new(),
-            DefaultHashBuilder::new(),
-        )
+    pub fn from_fpp(p: f64, n: usize) -> Self {
+        Self::from_fpp_with_hashers(p, n, DefaultHashBuilder::new(), DefaultHashBuilder::new())
     }
 
     /// Creates a new bloom filter with a predetermined bit array size `m` and number of hash
@@ -54,8 +49,8 @@ impl BloomFilter<DefaultHashBuilder> {
     /// use bbloom::BloomFilter;
     /// let _filter = BloomFilter::new(1227, 14);
     /// ```
-    pub fn new(m: usize, k: usize) -> BloomFilter<DefaultHashBuilder> {
-        BloomFilter::with_hashers(m, k, DefaultHashBuilder::new(), DefaultHashBuilder::new())
+    pub fn new(m: usize, k: usize) -> Self {
+        Self::with_hashers(m, k, DefaultHashBuilder::new(), DefaultHashBuilder::new())
     }
 }
 
@@ -84,10 +79,10 @@ where
     ///     RandomState::new(),
     /// );
     /// ```
-    pub fn from_fpp_with_hashers(p: f64, n: usize, builder_1: S, builder_2: S) -> BloomFilter<S> {
+    pub fn from_fpp_with_hashers(p: f64, n: usize, builder_1: S, builder_2: S) -> Self {
         let m = optimal_required_bits(p, n);
         let k = optimal_number_of_hash_functions(m, n);
-        BloomFilter::with_hashers(m, k, builder_1, builder_2)
+        Self::with_hashers(m, k, builder_1, builder_2)
     }
 
     /// Creates a new bloom filter with a predetermined bit array size `m` and number of hash
@@ -100,8 +95,8 @@ where
     /// use bbloom::BloomFilter;
     /// let _filter = BloomFilter::with_hashers(1227, 14, RandomState::new(), RandomState::new());
     /// ```
-    pub fn with_hashers(m: usize, k: usize, builder_1: S, builder_2: S) -> BloomFilter<S> {
-        BloomFilter {
+    pub fn with_hashers(m: usize, k: usize, builder_1: S, builder_2: S) -> Self {
+        Self {
             bits: BitVec::from_elem(m, false),
             m,
             n: 0,
