@@ -1,14 +1,14 @@
-# bloom
+# bbloom
 
-**bloom** is a Rust library that provides an implementation of a Bloom filter.
+**bbloom** is a Rust library that provides an implementation of a Bloom filter.
 
 ## Install
 
-bloom is not published to [crates.io]. Add the dependency to `Cargo.toml` using
-the git repository.
+bbloom is not published to [crates.io]. Add the dependency to `Cargo.toml`
+using the git repository.
 
 ```toml
-bloom = { git = "https://github.com/zaeleus/bloom.git" }
+bbloom = { git = "https://github.com/zaeleus/bbloom.git" }
 ```
 
 [crates.io]: https://crates.io/
@@ -16,7 +16,7 @@ bloom = { git = "https://github.com/zaeleus/bloom.git" }
 ## Examples
 
 ```rust
-use bloom::BloomFilter;
+use bbloom::BloomFilter;
 
 // false positive probability
 const P: f64 = 0.0001;

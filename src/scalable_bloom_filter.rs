@@ -33,7 +33,7 @@ impl ScalableBloomFilter<DefaultHashBuilder> {
     /// # Examples
     ///
     /// ```
-    /// use bloom::ScalableBloomFilter;
+    /// use bbloom::ScalableBloomFilter;
     /// let _filter = ScalableBloomFilter::new(0.0001, 64);
     /// ```
     pub fn new(p: f64, n: usize) -> ScalableBloomFilter<DefaultHashBuilder> {
@@ -57,7 +57,7 @@ where
     /// # Examples
     ///
     /// ```
-    /// use bloom::ScalableBloomFilter;
+    /// use bbloom::ScalableBloomFilter;
     /// let _filter = ScalableBloomFilter::new(0.0001, 64);
     /// ```
     pub fn with_hashers(p: f64, n: usize, builder_1: S, builder_2: S) -> ScalableBloomFilter<S> {
@@ -76,7 +76,7 @@ where
     /// # Examples
     ///
     /// ```
-    /// use bloom::ScalableBloomFilter;
+    /// use bbloom::ScalableBloomFilter;
     ///
     /// let mut filter = ScalableBloomFilter::new(0.0001, 64);
     ///
@@ -120,7 +120,7 @@ where
     /// # Examples
     ///
     /// ```
-    /// use bloom::ScalableBloomFilter;
+    /// use bbloom::ScalableBloomFilter;
     ///
     /// let mut filter = ScalableBloomFilter::new(0.0001, 64);
     ///

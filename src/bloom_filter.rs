@@ -33,7 +33,7 @@ impl BloomFilter<DefaultHashBuilder> {
     /// # Examples
     ///
     /// ```
-    /// use bloom::BloomFilter;
+    /// use bbloom::BloomFilter;
     /// let _filter = BloomFilter::from_fpp(0.0001, 64);
     /// ```
     pub fn from_fpp(p: f64, n: usize) -> BloomFilter<DefaultHashBuilder> {
@@ -51,7 +51,7 @@ impl BloomFilter<DefaultHashBuilder> {
     /// # Examples
     ///
     /// ```
-    /// use bloom::BloomFilter;
+    /// use bbloom::BloomFilter;
     /// let _filter = BloomFilter::new(1227, 14);
     /// ```
     pub fn new(m: usize, k: usize) -> BloomFilter<DefaultHashBuilder> {
@@ -76,7 +76,7 @@ where
     ///
     /// ```
     /// use std::collections::hash_map::RandomState;
-    /// use bloom::BloomFilter;
+    /// use bbloom::BloomFilter;
     /// let _filter = BloomFilter::from_fpp_with_hashers(
     ///     0.0001,
     ///     64,
@@ -97,7 +97,7 @@ where
     ///
     /// ```
     /// use std::collections::hash_map::RandomState;
-    /// use bloom::BloomFilter;
+    /// use bbloom::BloomFilter;
     /// let _filter = BloomFilter::with_hashers(1227, 14, RandomState::new(), RandomState::new());
     /// ```
     pub fn with_hashers(m: usize, k: usize, builder_1: S, builder_2: S) -> BloomFilter<S> {
@@ -116,7 +116,7 @@ where
     /// # Examples
     ///
     /// ```
-    /// use bloom::BloomFilter;
+    /// use bbloom::BloomFilter;
     /// let filter = BloomFilter::new(1227, 14);
     /// assert_eq!(filter.capacity(), 1227);
     /// ```
@@ -133,7 +133,7 @@ where
     /// # Examples
     ///
     /// ```
-    /// use bloom::BloomFilter;
+    /// use bbloom::BloomFilter;
     ///
     /// let mut filter = BloomFilter::from_fpp(0.0001, 64);
     /// filter.insert("a");
@@ -165,7 +165,7 @@ where
     /// # Examples
     ///
     /// ```
-    /// use bloom::BloomFilter;
+    /// use bbloom::BloomFilter;
     ///
     /// let mut filter = BloomFilter::from_fpp(0.0001, 64);
     /// assert!(filter.insert("a"));
@@ -198,7 +198,7 @@ where
     /// # Examples
     ///
     /// ```
-    /// use bloom::BloomFilter;
+    /// use bbloom::BloomFilter;
     ///
     /// let mut filter = BloomFilter::from_fpp(0.0001, 64);
     /// assert_eq!(filter.len(), 0);
@@ -218,7 +218,7 @@ where
     /// # Examples
     ///
     /// ```
-    /// use bloom::BloomFilter;
+    /// use bbloom::BloomFilter;
     ///
     /// let mut filter = BloomFilter::from_fpp(0.0001, 64);
     /// assert!(filter.is_empty());
