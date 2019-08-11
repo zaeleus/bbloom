@@ -89,6 +89,17 @@ where
     /// Returns whether the value is already (maybe) in the _last_ filter or not. Duplicate values
     /// may be present in the scalable Bloom filter but not in the last filter. When a duplicate
     /// value is in the last filter, it does not affect the load factor.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use bbloom::ScalableBloomFilter;
+    ///
+    /// let mut filter = ScalableBloomFilter::new(0.0001, 64);
+    /// assert!(filter.insert("a"));
+    /// assert!(filter.insert("b"));
+    /// assert!(!filter.insert("b"));
+    /// ```
     pub fn insert<H: Hash + ?Sized>(&mut self, key: &H) -> bool {
         if self.n >= self.total_capacity {
             self.grow();
