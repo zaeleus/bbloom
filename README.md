@@ -1,5 +1,7 @@
 # bbloom
 
+[![GitHub Actions status](https://github.com/zaeleus/bbloom/workflows/CI/badge.svg)](https://github.com/zaeleus/bbloom/actions)
+
 **bbloom** is a Rust library that provides an implementation of a Bloom filter.
 
 A scalable Bloom filter is also included, which is a variant that dynamically
