@@ -40,3 +40,9 @@ fn main() {
     assert!(!filter.contains("c"));
 }
 ```
+
+## References
+
+  * Paulo Sérgio Almeida, Carlos Baquero, Nuno Preguiça, and David Hutchison.
+    2007. Scalable Bloom Filters. Inf. Process. Lett. 101, 6 (March 2007),
+    255-261. DOI=http://dx.doi.org/10.1016/j.ipl.2006.10.007
