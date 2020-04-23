@@ -13,7 +13,7 @@ bbloom is not published to [crates.io]. Add the dependency to `Cargo.toml`
 using the git repository.
 
 ```toml
-bbloom = { git = "https://github.com/zaeleus/bbloom.git" }
+bbloom = { git = "https://github.com/zaeleus/bbloom.git", tag = "v0.1.0" }
 ```
 
 [crates.io]: https://crates.io/
