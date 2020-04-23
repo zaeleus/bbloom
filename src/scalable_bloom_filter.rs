@@ -7,14 +7,35 @@ const GROWTH_FACTOR: usize = 2;
 // tightening ratio `r`
 const TIGHTENING_RATIO: f64 = 0.85;
 
-/// A scalable Bloom filter is a variant of a Bloom filter that can adapt to to the number of
-/// elements inserted into the filter, targetting a given false positive probability. This is
-/// effectively done by layering bloom filters with larger capacities.
+/// A variant of a Bloom filter that can adapt to to the number of elements inserted into the
+/// filter, targeting a given false positive probability.
 ///
-/// This implements the ideas described in "[Scalable Bloom Filters]" (2007) by Almeida, Paulo
-/// Sérgio, et al.
+/// This is effectively done by layering bloom filters with larger capacities.
+///
+/// See "[Scalable Bloom Filters]" (2007) by Almeida, Paulo Sérgio, et al. for a formal
+/// description.
 ///
 /// [Scalable Bloom Filters]: https://dl.acm.org/citation.cfm?id=1224501
+///
+/// # Examples
+///
+/// ```
+/// use bbloom::ScalableBloomFilter;
+///
+/// // false positive probability
+/// const P: f64 = 0.0001;
+/// // expected number of inserted values
+/// const N: usize = 64;
+///
+/// let mut filter = ScalableBloomFilter::new(P, N);
+///
+/// filter.insert("a");
+/// filter.insert("b");
+///
+/// assert!(filter.contains("a"));
+/// assert!(filter.contains("b"));
+/// assert!(!filter.contains("c"));
+/// ```
 pub struct ScalableBloomFilter<S = DefaultHashBuilder> {
     // total number of elements inserted
     n: usize,

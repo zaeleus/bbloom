@@ -5,8 +5,28 @@ use bit_vec::BitVec;
 
 use crate::{double_hasher::DoubleHasher, DefaultHashBuilder};
 
-/// A Bloom filter is a probabilistic data structure to test whether an element may be in a set or
-/// definitely not in a set.
+/// A probabilistic data structure to test whether an element may be in a set or definitely not in
+/// a set.
+///
+/// # Examples
+///
+/// ```
+/// use bbloom::BloomFilter;
+///
+/// // false positive probability
+/// const P: f64 = 0.0001;
+/// // expected number of inserted values
+/// const N: usize = 64;
+///
+/// let mut filter = BloomFilter::from_fpp(P, N);
+///
+/// filter.insert("a");
+/// filter.insert("b");
+///
+/// assert!(filter.contains("a"));
+/// assert!(filter.contains("b"));
+/// assert!(!filter.contains("c"));
+/// ```
 pub struct BloomFilter<S = DefaultHashBuilder> {
     bits: BitVec,
 
